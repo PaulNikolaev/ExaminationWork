@@ -55,11 +55,21 @@ public class Presenter {
 
     //Добавление команды животному по ID
     public void addCommandToAnimal(long id, String command) {
-        service.addCommandToAnimal(id, command);
+        boolean success = service.addCommandToAnimal(id, command);
+        if (success) {
+            System.out.println("Команда успешно добавлена.");
+        } else {
+            System.out.println("Ошибка: животное с таким ID не найдено.");
+        }
     }
 
     // Удаление животного из реестра по ID
     public void removeAnimalById(long id) {
-        service.removeAnimalById(id);
+        boolean removed = service.removeAnimalById(id);
+        if (removed) {
+            System.out.println("Животное успешно удалено.");
+        } else {
+            System.out.println("Ошибка: животное с таким ID не найдено.");
+        }
     }
 }

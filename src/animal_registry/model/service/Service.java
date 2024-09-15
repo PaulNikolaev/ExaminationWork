@@ -29,14 +29,15 @@ public class Service {
 
     // Добавление животного в реестр
     public void addAnimal(String name, PetType petType, LocalDate birthDate) {
-        Animal animal = animalBuilder.build(name, petType, birthDate);
+        long newId = animalBuilder.getNextId();
+        Animal animal = animalBuilder.build(newId, name, petType, birthDate);
         animalRegistry.addAnimal(animal);
     }
 
 
     // Добавление команды животному по его ID
-    public void addCommandToAnimal(long id, String command) {
-        animalRegistry.addCommandToAnimal(id, command);
+    public boolean addCommandToAnimal(long id, String command) {
+        return animalRegistry.addCommandToAnimal(id, command);
     }
 
     // Получение списка команд животного по его ID
@@ -55,8 +56,8 @@ public class Service {
     }
 
     // Удаление животного по его ID
-    public void removeAnimalById(long id) {
-        animalRegistry.removeAnimalById(id); // Просто вызываем метод удаления из реестра
+    public boolean removeAnimalById(long id) {
+        return animalRegistry.removeAnimalById(id);
     }
 
     // Сортировка по имени
@@ -89,6 +90,7 @@ public class Service {
         AnimalRegistry<Animal> loadedRegistry = (AnimalRegistry<Animal>) fileHandler.read();
         if (loadedRegistry != null) {
             animalRegistry = loadedRegistry;
+            animalBuilder.initializeId(animalRegistry.getAnimals()); // Инициализация максимального ID
             System.out.println("Реестр животных успешно загружен.");
         } else {
             System.out.println("Ошибка при загрузке реестра.");

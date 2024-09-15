@@ -79,49 +79,53 @@ public class ConsoleUI implements View {
         presenter.getAnimalListInfo();
     }
 
-    //Добавление команды животному по ID
-    public void addCommandToAnimal() {
+    // Метод для запроса ввода ID животного
+    private Long getAnimalIdFromUser() {
         System.out.print("Введите ID животного (или 'нет' для отмены): ");
         String idStr = scanner.nextLine().trim().toLowerCase();
 
         if (idStr.equals("нет")) {
             System.out.println("Операция отменена.");
-            return;
+            return null;
         }
 
         try {
-            long id = Long.parseLong(idStr);
-            System.out.print("Введите команду для животного: ");
-            String command = scanner.nextLine().trim();
-
-            if (command.isEmpty()) {
-                System.out.println("Ошибка: команда не может быть пустой.");
-                return;
-            }
-
-            presenter.addCommandToAnimal(id, command);
-            System.out.println("Команда успешно добавлена.");
+            return Long.parseLong(idStr);
         } catch (NumberFormatException e) {
             System.out.println("Ошибка: введен некорректный ID.");
+            return null;
         }
+    }
+
+    // Метод для запроса команды для животного
+    private String getCommandFromUser() {
+        System.out.print("Введите команду для животного: ");
+        String command = scanner.nextLine().trim();
+
+        if (command.isEmpty()) {
+            System.out.println("Ошибка: команда не может быть пустой.");
+            return null;
+        }
+        return command;
+    }
+
+    // Добавление команды животному по ID
+    public void addCommandToAnimal() {
+        Long id = getAnimalIdFromUser();
+        if (id == null) return;
+
+        String command = getCommandFromUser();
+        if (command == null) return;
+
+        presenter.addCommandToAnimal(id, command);
     }
 
     // Удаление животного из реестра по ID
     public void removeAnimalById() {
-        System.out.print("Введите ID животного, которое нужно удалить (или напишите 'нет' для отмены): ");
-        String idStr = scanner.nextLine().trim().toLowerCase();
+        Long id = getAnimalIdFromUser();
+        if (id == null) return;
 
-        if ("нет".equals(idStr)) {
-            System.out.println("Операция отменена.");
-            return;
-        }
-
-        try {
-            long id = Long.parseLong(idStr);
-            presenter.removeAnimalById(id);
-        } catch (NumberFormatException e) {
-            System.out.println("Ошибка: введен некорректный ID.");
-        }
+        presenter.removeAnimalById(id);
     }
 
     // Получить информацию о количестве животных в питомнике

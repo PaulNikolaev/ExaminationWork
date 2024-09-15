@@ -40,14 +40,13 @@ public class AnimalRegistry<E extends ItemAnimalRegistry<E>> implements Serializ
     }
 
     // Добавление команды животному по его ID
-    public void addCommandToAnimal(long id, String command) {
+    public boolean addCommandToAnimal(long id, String command) {
         E foundAnimal = findAnimalByIdInternal(id);
         if (foundAnimal != null) {
             foundAnimal.addCommand(command);
-            System.out.println("Команда успешно добавлена животному с ID: " + id);
-        } else {
-            System.out.println("Животное с ID: " + id + " не найдено.");
+            return true;
         }
+        return false;
     }
 
     // Получение списка команд животного по его ID
@@ -106,16 +105,13 @@ public class AnimalRegistry<E extends ItemAnimalRegistry<E>> implements Serializ
     }
 
     // Удаление животного по ID
-    public void removeAnimalById(long id) {
-        Iterator<E> iterator = animal.iterator();
-        while (iterator.hasNext()) {
-            E currentAnimal = iterator.next();
-            if (currentAnimal.getId() == id) {
-                iterator.remove();
-                return;
-            }
+    public boolean removeAnimalById(long id) {
+        E animalToRemove = findAnimalByIdInternal(id);
+        if (animalToRemove != null) {
+            animal.remove(animalToRemove);
+            return true;
         }
-        throw new IllegalArgumentException("Животное с ID " + id + " не найдено");
+        return false;
     }
 
     // Метод для получения информации о всех животных
@@ -187,8 +183,11 @@ public class AnimalRegistry<E extends ItemAnimalRegistry<E>> implements Serializ
         return getInfo();
     }
 
+    public List<E> getAnimals() {
+        return animal;
+    }
     @Override
     public Iterator<E> iterator() {
-        return new AnimalIterator<>(animal);
+        return animal.iterator();
     }
 }
