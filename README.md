@@ -341,6 +341,6 @@ SELECT
     'donkeys' AS source_table
 FROM donkeys;
 ```
-### 13.Создать класс с Инкапсуляцией методов и наследованием по диаграмме.
+### 13.[Создать класс](https://github.com/PaulNikolaev/ExaminationWork/tree/main/src/animal_registry/model/animal) с Инкапсуляцией методов и наследованием по диаграмме.
 
 ### 14. [Написать программу](https://github.com/PaulNikolaev/ExaminationWork/tree/main/src "Animal registry"), имитирующую работу реестра домашних животных.
