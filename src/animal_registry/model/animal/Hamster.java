@@ -19,6 +19,6 @@ public class Hamster extends Animal {
 
     @Override
     public String getInfo() {
-        return "Хомяк: " + super.getInfo();
+        return super.getInfo();
     }
 }

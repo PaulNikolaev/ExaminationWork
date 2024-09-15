@@ -3,8 +3,8 @@ package animal_registry.model.animal_registry;
 import animal_registry.model.animal.PetType;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,44 +19,75 @@ public class AnimalRegistry<E extends ItemAnimalRegistry<E>> implements Serializ
         this.animal = animalList;
     }
 
-//    Добавление животного в реестр
-    public void addAnimal(E animal) {
-        this.animal.add(animal);
+    // Добавление животного в реестр с проверкой на дубликаты
+    public void addAnimal(E animalToAdd) {
+        if (isAnimalDuplicate(animalToAdd.getName(), animalToAdd.getPetType(), animalToAdd.getBirthDate())) {
+            throw new IllegalArgumentException("Животное с таким именем, типом и датой рождения уже существует.");
+        }
+        this.animal.add(animalToAdd);
     }
 
-    // Добавление команды животному по ID
-    public boolean addCommandToAnimal(long id, String command) {
-        E animal = findAnimalById(id);
-        if (animal != null) {
-            animal.addCommand(command);
-            return true;
+    // Проверка на наличие животного с одинаковыми именем, типом и датой рождения
+    private boolean isAnimalDuplicate(String name, PetType petType, LocalDate birthDate) {
+        for (E animal : this.animal) {
+            if (animal.getName().equals(name) &&
+                    animal.getPetType() == petType &&
+                    animal.getBirthDate().equals(birthDate)) {
+                return true;
+            }
         }
         return false;
     }
 
-    // Получение списка команд животного по ID
-    public List<String> getCommandsByAnimalId(long id) {
-        E animal = findAnimalById(id);
-        if (animal != null) {
-            return animal.getCommands(); // Возвращаем команды животного
+    // Добавление команды животному по его ID
+    public void addCommandToAnimal(long id, String command) {
+        E foundAnimal = findAnimalByIdInternal(id);
+        if (foundAnimal != null) {
+            foundAnimal.addCommand(command);
+            System.out.println("Команда успешно добавлена животному с ID: " + id);
+        } else {
+            System.out.println("Животное с ID: " + id + " не найдено.");
         }
-        return Collections.emptyList(); // Животное с таким ID не найдено
     }
 
-//    Поиск животного по имени
-    public E findAnimalByName(String name) {
-        for (E animal: animal){
-            if (animal.getName().equals(name)){
-                return animal;
+    // Получение списка команд животного по его ID
+    public void getCommandsByAnimalId(long id) {
+        E foundAnimal = findAnimalByIdInternal(id);  // Используем приватный метод для поиска
+        if (foundAnimal != null) {
+            List<String> commands = foundAnimal.getCommands();
+            if (commands.isEmpty()) {
+                System.out.println("У животного с ID " + id + " нет команд.");
+            } else {
+                System.out.println("Команды животного с ID " + id + ": " + String.join(", ", commands));
             }
+        } else {
+            System.out.println("Животное с ID " + id + " не найдено.");
         }
-        return null;
     }
 
+    // Поиск животного по ID
+    public void findAnimalById(long id) {
+        E foundAnimal = findAnimalByIdInternal(id);  // Используем приватный метод для поиска
+        if (foundAnimal != null) {
+            System.out.println(foundAnimal);
+        } else {
+            System.out.println("Животное с ID " + id + " не найдено.");
+        }
+    }
 
-// Поиск животного по ID
-    public E findAnimalById(long id) {
-        for (E animal: animal) {
+    // Поиск животного по имени
+    public void findAnimalByName(String name) {
+        E foundAnimal = findAnimalByNameInternal(name);  // Используем приватный метод для поиска
+        if (foundAnimal != null) {
+            System.out.println(foundAnimal);
+        } else {
+            System.out.println("Животное с именем " + name + " не найдено.");
+        }
+    }
+
+    // Приватный метод для поиска по ID
+    private E findAnimalByIdInternal(long id) {
+        for (E animal : this.animal) {
             if (animal.getId() == id) {
                 return animal;
             }
@@ -64,35 +95,70 @@ public class AnimalRegistry<E extends ItemAnimalRegistry<E>> implements Serializ
         return null;
     }
 
+    // Приватный метод для поиска по имени
+    private E findAnimalByNameInternal(String name) {
+        for (E animal : this.animal) {
+            if (animal.getName().equals(name)) {
+                return animal;
+            }
+        }
+        return null;
+    }
+
     // Удаление животного по ID
-    public boolean removeAnimalById(long id) {
+    public void removeAnimalById(long id) {
         Iterator<E> iterator = animal.iterator();
         while (iterator.hasNext()) {
             E currentAnimal = iterator.next();
             if (currentAnimal.getId() == id) {
                 iterator.remove();
-                return true;
+                return;
             }
         }
-        return false;
+        throw new IllegalArgumentException("Животное с ID " + id + " не найдено");
+    }
+
+    // Метод для получения информации о всех животных
+    public String getAnimalListInfo() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Реестр питомника: \n");
+        for (E animal : this.animal) {
+            sb.append(animal);
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
     // Метод для получения списка животных по типу
-    public List<E> getAnimalsByType(PetType petType) {
+    public String getAnimalsByType(PetType petType) {
         List<E> animalsByType = new ArrayList<>();
         for (E animal : animal) {
             if (animal.getPetType() == petType) {
                 animalsByType.add(animal);
             }
         }
-        return animalsByType;
+
+        String russianPetType = getRussianPetType(petType);
+
+        if (animalsByType.isEmpty()) {
+            return "Животных типа " + russianPetType + " нет в реестре.";
+        }
+
+        StringBuilder sb = new StringBuilder("Список животных типа \"" + russianPetType + "\":\n");
+        for (E animal : animalsByType) {
+            sb.append(animal).append("\n");
+        }
+        return sb.toString();
     }
 
-    @Override
-    public String toString() {
-        return getInfo();
+    private String getRussianPetType(PetType petType) {
+        switch (petType) {
+            case Cat: return "кот";
+            case Dog: return "собака";
+            case Hamster: return "хомяк";
+            default: return "неизвестный вид";
+        }
     }
-
 
     private String getInfo() {
         StringBuilder sb = new StringBuilder();
@@ -106,18 +172,23 @@ public class AnimalRegistry<E extends ItemAnimalRegistry<E>> implements Serializ
         return sb.toString();
     }
 
-
-    @Override
-    public Iterator<E> iterator() {
-        return new AnimalIterator<>(animal);
-    }
-
-
+    // Сортировка по имени
     public void sortByName() {
         animal.sort(new AnimalComparatorByName<>());
     }
 
+    // Размер реестра
     public int animalRegistrySize() {
         return animal.size();
+    }
+
+    @Override
+    public String toString() {
+        return getInfo();
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new AnimalIterator<>(animal);
     }
 }

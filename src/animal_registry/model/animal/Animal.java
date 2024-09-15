@@ -108,15 +108,12 @@ public class Animal implements ItemAnimalRegistry<Animal> {
     }
 
     private String getTypeInfo(){
-        String res = "";
-        if (petType.equals(PetType.Cat)) {
-            res += "кот";
-        } else if (petType.equals(PetType.Dog)) {
-            res += "собака";
-        } else if (petType.equals(PetType.Hamster)) {
-            res += "хомяк";
+        switch (petType) {
+            case Cat: return "кот";
+            case Dog: return "собака";
+            case Hamster: return "хомяк";
+            default: return "неизвестный вид";
         }
-        return res;
     }
 
     private String getCommandsInfo() {

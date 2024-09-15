@@ -19,6 +19,6 @@ public class Cat extends Animal {
 
     @Override
     public String getInfo() {
-        return "Кот: " + super.getInfo();
+        return super.getInfo();
     }
 }
