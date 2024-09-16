@@ -2,12 +2,15 @@ package animal_registry.view;
 
 import animal_registry.model.animal.PetType;
 import animal_registry.presenter.Presenter;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
-public class ConsoleUI implements View {
+public class ConsoleUI implements View, Serializable {
+    private static final long serialVersionUID = 1L;
     private Scanner scanner;
     private boolean work;
     private Presenter presenter;
@@ -97,25 +100,27 @@ public class ConsoleUI implements View {
         }
     }
 
-    // Метод для запроса команды для животного
-    private String getCommandFromUser() {
+
+    // Добавление команды животному по ID
+    public void addCommandToAnimal() {
+        Long id = getAnimalIdFromUser();
+        if (id == null) return;  // Прекратить выполнение, если ID некорректен
+
+        // Проверка, существует ли животное с данным ID
+        boolean animalExists = presenter.checkAnimalExistsById(id);
+        if (!animalExists) {
+            System.out.println("Ошибка: животное с таким ID не найдено.");
+            return;
+        }
+
+        // Запрос команды только если животное существует
         System.out.print("Введите команду для животного: ");
         String command = scanner.nextLine().trim();
 
         if (command.isEmpty()) {
             System.out.println("Ошибка: команда не может быть пустой.");
-            return null;
+            return;
         }
-        return command;
-    }
-
-    // Добавление команды животному по ID
-    public void addCommandToAnimal() {
-        Long id = getAnimalIdFromUser();
-        if (id == null) return;
-
-        String command = getCommandFromUser();
-        if (command == null) return;
 
         presenter.addCommandToAnimal(id, command);
     }

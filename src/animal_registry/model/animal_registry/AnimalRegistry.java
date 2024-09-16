@@ -66,7 +66,7 @@ public class AnimalRegistry<E extends ItemAnimalRegistry<E>> implements Serializ
 
     // Поиск животного по ID
     public void findAnimalById(long id) {
-        E foundAnimal = findAnimalByIdInternal(id);  // Используем приватный метод для поиска
+        E foundAnimal = findAnimalByIdInternal(id);
         if (foundAnimal != null) {
             System.out.println(foundAnimal);
         } else {
@@ -189,5 +189,10 @@ public class AnimalRegistry<E extends ItemAnimalRegistry<E>> implements Serializ
     @Override
     public Iterator<E> iterator() {
         return animal.iterator();
+    }
+
+    public boolean checkAnimalExistsById(Long id) {
+        E foundAnimal = findAnimalByIdInternal(id);
+        return foundAnimal != null;
     }
 }

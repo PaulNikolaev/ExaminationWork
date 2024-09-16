@@ -5,10 +5,13 @@ import animal_registry.model.animal.PetType;
 import animal_registry.model.animal_registry.AnimalRegistry;
 import animal_registry.model.builder.AnimalBuilder;
 import animal_registry.model.writer.FileHandler;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 
 
-public class Service {
+public class Service implements Serializable {
+    private static final long serialVersionUID = 1L;
     private AnimalRegistry<Animal> animalRegistry;
     private AnimalBuilder animalBuilder;
     private FileHandler fileHandler;
@@ -97,4 +100,8 @@ public class Service {
         }
     }
 
+    public boolean checkAnimalExistsById(Long id) {
+        boolean checkId = animalRegistry.checkAnimalExistsById(id);
+        return checkId;
+    }
 }

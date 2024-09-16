@@ -4,9 +4,11 @@ import animal_registry.model.animal.PetType;
 import animal_registry.model.service.Service;
 import animal_registry.view.View;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Presenter {
+public class Presenter implements Serializable {
+    private static final long serialVersionUID = 1L;
     private View view;
     private Service service;
 
@@ -71,5 +73,10 @@ public class Presenter {
         } else {
             System.out.println("Ошибка: животное с таким ID не найдено.");
         }
+    }
+
+    public boolean checkAnimalExistsById(Long id) {
+        boolean checkId = service.checkAnimalExistsById(id);
+        return checkId;
     }
 }
