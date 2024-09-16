@@ -101,7 +101,6 @@ public class ConsoleUI implements View, Serializable {
         }
     }
 
-
     // Добавление команды животному по ID
     public void addCommandToAnimal() {
         Long id = getAnimalIdFromUser();

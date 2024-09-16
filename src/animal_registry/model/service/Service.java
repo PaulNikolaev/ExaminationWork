@@ -6,6 +6,8 @@ import animal_registry.model.animal_registry.AnimalRegistry;
 import animal_registry.model.builder.AnimalBuilder;
 import animal_registry.model.writer.FileHandler;
 
+import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
@@ -85,19 +87,33 @@ public class Service implements Serializable {
 
     // Сохранение реестра животных в файл
     public void saveRegistry() {
-        fileHandler.save(animalRegistry);
-        System.out.println("Реестр животных успешно сохранен.");
+        try {
+            fileHandler.save(animalRegistry);
+            System.out.println("Реестр животных успешно сохранён.");
+        } catch (Exception e) {
+            System.out.println("Непредвиденная ошибка при сохранении реестра: " + e.getMessage());
+        }
     }
 
     // Загрузка реестра животных из файла
     public void loadRegistry() {
-        AnimalRegistry<Animal> loadedRegistry = (AnimalRegistry<Animal>) fileHandler.read();
-        if (loadedRegistry != null) {
-            animalRegistry = loadedRegistry;
-            animalBuilder.initializeId(animalRegistry.getAnimals()); // Инициализация максимального ID
-            System.out.println("Реестр животных успешно загружен.");
-        } else {
-            System.out.println("Ошибка при загрузке реестра.");
+        try {
+            AnimalRegistry<Animal> loadedRegistry = (AnimalRegistry<Animal>) fileHandler.read();
+            if (loadedRegistry != null) {
+                animalRegistry = loadedRegistry;
+                animalBuilder.initializeId(animalRegistry.getAnimals());
+                System.out.println("Реестр животных успешно загружен.");
+            } else {
+                throw new Exception("Ошибка: загруженный реестр пуст.");
+            }
+        } catch (ClassCastException e) {
+            System.out.println("Ошибка: несовместимый формат данных реестра.");
+        } catch (InvalidClassException e) {
+            System.out.println("Ошибка: несовместимая версия класса AnimalRegistry. " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Ошибка при чтении файла реестра: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Общая ошибка при загрузке реестра: " + e.getMessage());
         }
     }
 

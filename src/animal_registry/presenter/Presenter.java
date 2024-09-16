@@ -60,6 +60,7 @@ public class Presenter implements Serializable {
     public List<String> getCommandsByAnimalId(long id) {
         return service.getCommandsByAnimalId(id);
     }
+
     //Добавление команды животному по ID
     public void addCommandToAnimal(long id, String command) {
         boolean success = service.addCommandToAnimal(id, command);
