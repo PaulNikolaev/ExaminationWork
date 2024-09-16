@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleUI implements View, Serializable {
@@ -104,21 +105,25 @@ public class ConsoleUI implements View, Serializable {
     // Добавление команды животному по ID
     public void addCommandToAnimal() {
         Long id = getAnimalIdFromUser();
-        if (id == null) return;  // Прекратить выполнение, если ID некорректен
+        if (id == null) return;
 
-        // Проверка, существует ли животное с данным ID
         boolean animalExists = presenter.checkAnimalExistsById(id);
         if (!animalExists) {
             System.out.println("Ошибка: животное с таким ID не найдено.");
             return;
         }
 
-        // Запрос команды только если животное существует
+        List<String> existingCommands = presenter.getCommandsByAnimalId(id);
+
         System.out.print("Введите команду для животного: ");
         String command = scanner.nextLine().trim();
 
         if (command.isEmpty()) {
             System.out.println("Ошибка: команда не может быть пустой.");
+            return;
+        }
+        if (existingCommands.contains(command)) {
+            System.out.println("Ошибка: такая команда уже существует.");
             return;
         }
 

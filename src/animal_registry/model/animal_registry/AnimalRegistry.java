@@ -5,10 +5,12 @@ import animal_registry.model.animal.PetType;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 public class AnimalRegistry<E extends ItemAnimalRegistry<E>> implements Serializable, Iterable<E> {
+    private static final long serialVersionUID = 1L;
     private final List<E> animal;
 
     public AnimalRegistry() {
@@ -50,18 +52,12 @@ public class AnimalRegistry<E extends ItemAnimalRegistry<E>> implements Serializ
     }
 
     // Получение списка команд животного по его ID
-    public void getCommandsByAnimalId(long id) {
-        E foundAnimal = findAnimalByIdInternal(id);  // Используем приватный метод для поиска
-        if (foundAnimal != null) {
-            List<String> commands = foundAnimal.getCommands();
-            if (commands.isEmpty()) {
-                System.out.println("У животного с ID " + id + " нет команд.");
-            } else {
-                System.out.println("Команды животного с ID " + id + ": " + String.join(", ", commands));
-            }
-        } else {
-            System.out.println("Животное с ID " + id + " не найдено.");
+    public List<String> getCommandsByAnimalId(long id) {
+        E animal = findAnimalByIdInternal(id);
+        if (animal != null) {
+            return animal.getCommands();
         }
+        return Collections.emptyList();
     }
 
     // Поиск животного по ID

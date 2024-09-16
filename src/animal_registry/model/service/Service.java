@@ -8,6 +8,7 @@ import animal_registry.model.writer.FileHandler;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 
 public class Service implements Serializable {
@@ -44,8 +45,8 @@ public class Service implements Serializable {
     }
 
     // Получение списка команд животного по его ID
-    public void getCommandsByAnimalId(long id) {
-        animalRegistry.getCommandsByAnimalId(id);
+    public List<String> getCommandsByAnimalId(long id) {
+        return animalRegistry.getCommandsByAnimalId(id);
     }
 
     // Поиск животного по ID

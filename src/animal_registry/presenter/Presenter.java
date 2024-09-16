@@ -6,6 +6,7 @@ import animal_registry.view.View;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 public class Presenter implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -55,6 +56,10 @@ public class Presenter implements Serializable {
         return service.getAnimalsByType(petType);
     }
 
+    // Получение списка команд животного по ID
+    public List<String> getCommandsByAnimalId(long id) {
+        return service.getCommandsByAnimalId(id);
+    }
     //Добавление команды животному по ID
     public void addCommandToAnimal(long id, String command) {
         boolean success = service.addCommandToAnimal(id, command);
